@@ -88,7 +88,7 @@
 
            AJOUTER_EQUIPE.
            OPEN I-O Fequipe
-
+           blabla
 
 
            CREER_MATCH_POULES.
