@@ -113,11 +113,14 @@
       
            CREER_MATCH_ELIMINATOIRE.
            PERFORM WITH TEST AFTER UNTIL Wrep=0
-               DISPLAY 'Donnez les informations du match de poules'
-               DISPLAY 'id'
+               DISPLAY 'Donnez les informations de' 
+               DiSPLAY 'l'etape de la competition'
+               DISPLAY 'combientieme de la final (32, 16, 8, 4, 2, 1)?'
                ACCEPT m_id
                MOVE 'eliminatoire' TO m_statut
-
+               *>ici boucle qui prend les equipe de l'etape precedente
+               *>(des pouls si id =32) et qui va crée automatiquement 
+               *>tout les match de l'etape suivante en fonction des resultat
       
       
                WRITE matchTampon END-WRITE
