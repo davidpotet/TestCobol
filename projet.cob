@@ -110,4 +110,21 @@
                END-PERFORM
            END-PERFORM.
 
+      
+           CREER_MATCH_ELIMINATOIRE.
+           PERFORM WITH TEST AFTER UNTIL Wrep=0
+               DISPLAY 'Donnez les informations du match de poules'
+               DISPLAY 'id'
+               ACCEPT m_id
+               MOVE 'eliminatoire' TO m_statut
+
+      
+      
+               WRITE matchTampon END-WRITE
+               PERFORM WITH TEST AFTER UNTIL Wrep=0 OR Wrep=1
+                   DISPLAY 'Souhaitez vous continuer ? 1 ou 0'
+                   ACCEPT Wrep
+               END-PERFORM
+           END-PERFORM.
+      
            END PROGRAM ProjetCoupeDuMonde_cbl.
