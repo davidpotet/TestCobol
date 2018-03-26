@@ -1,2 +1,10 @@
 Recapitulatif du projet
 
+Notre projet est un logiciel qui sert a organisée les match d'une competition mondial de football et d'enregistrée ses résultat.
+Il nous permet de d'enregistrée les équipes selectionnées, les match qu'elle joue au fur et a mesure du deroulement de la competion,
+puis de stocké de manière organisé leur resultat.
+
+
+
+Dans un premier temps nous stockons toutes les equipe qui seront selectionnée puis lors du tirage au sort (fait en public par des personnes physiques). (AJOUTER_EQUIPE.)
+nous entrons donc manuelement toute les information sur les match de pouls puis sur les match éléminatoire,
