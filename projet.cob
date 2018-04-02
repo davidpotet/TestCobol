@@ -71,31 +71,59 @@
            77 Fmatch_stat PIC 9(2).
            77 Fgroupe_stat PIC 9(2).
            77 Wrep PIC 9(2).
+           77 TampoDernierMatch PIC 9(10).
+           77 Wfini PIC 9.
+           77 TampoIdMatch PIC 9(10).
 
 
            PROCEDURE DIVISION.
-
-
-           OPEN EXTEND Fequipe
-           IF Fequipe_stat =35 THEN
-           OPEN OUTPUT Fequipe
-           CLOSE Fequipe
-           OPEN I-O Fequipe
+           OPEN EXTEND Fgroupe
+           IF groupeTampon = 35 THEN
+               OPEN OUTPUT Fgroupe
            END-IF
-           CLOSE Fequipe
+           CLOSE Fgroupe
+
+           OPEN I-O Fmatch
+           IF matchTampon = 35 THEN
+               OPEN OUTPUT Fmatch
+           END-IF
+           CLOSE Fmatch
+
+           OPEN I-O FstatMatch
+           IF statMatchTampon = 35 THEN
+               OPEN OUTPUT FstatMatch
+           END-IF
+           CLOSE FstatMatch
+
+           OPEN I-O Fequipe
+           IF equipeTampon = 35 THEN
+           OPEN OUTPUT Fequipe
+           END-IF
+           CLOSE Fequipe.
 
 
+
+           AUTO_INCREMENT_ID_MATCH.
+               OPEN INPUT Fmatch
+               MOVE 0 TO Wfini
+               PERFORM WITH TEST AFTER UNTIL Wfini = 1
+                   READ Fmatch
+                   AT END MOVE 1 TO Wfini
+                   NOT at END
+                       MOVE m_id TO TampoDernierMatch
+               END-PERFORM
+           CLOSE Fmatch.
 
            AJOUTER_EQUIPE.
-           OPEN I-O Fequipe
-           blabla
+
+
 
 
            CREER_MATCH_POULES.
            PERFORM WITH TEST AFTER UNTIL Wrep=0
                DISPLAY 'Donnez les informations du match de poules'
-               DISPLAY 'id'
-               ACCEPT m_id
+               PERFORM AUTO_INCREMENT_ID_MATCH
+               COMPUTE TampoIdMatch = TampoDernierMatch + 1
                MOVE 'poules' TO m_statut
                DISPLAY 'nom equipe 1'
                ACCEPT m_nomEquipe1
