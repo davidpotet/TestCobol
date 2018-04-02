@@ -23,11 +23,11 @@
        WORKING-STORAGE SECTION.
            77 Wrep PIC 9(2).
            77 Fgroupe_stat PIC 9(2).
-       77 Wfin PIC 9(2).
+           77 Wfin PIC 9(2).
            77 choix PIC 9.
            77 choix_menu PIC 9.
            77 FIN_MENU PIC X(10).
-       77 fin_fichier pic x(10).
+           77 fin_fichier pic x(10).
            77 Wlettre_groupe pic A(10).
            77 Wgroupe_fin pic 9(2).
            77 gr_lettreC pic x(100).
@@ -39,6 +39,7 @@
        OPEN I-O Fgroupe
        if Fgroupe_stat=35 THEN
            open output Fgroupe
+           move 1 to Wrep
            MOVE 'faux' TO FIN_MENU
            PERFORM MENU_PRINCIPAL
            UNTIL FIN_MENU='vrai'
@@ -63,23 +64,22 @@
         ACCEPT choix_menu
         EVALUATE choix_menu
         WHEN 1 PERFORM CREER_GROUPES
-        WHEN 2 PERFORM AFFICHER-GROUPE
-        WHEN 0 move 'vrai' to FIN_MENU
-        WHEN OTHER DISPLAY "Entree fausse" choix_menu
+        WHEN 2 PERFORM AFFICHER-GROUPES
+        WHEN other move 'vrai' to FIN_MENU
         END-EVALUATE.
 
        CREER_GROUPES.
-
+           perform until Wrep=0
                DISPLAY 'CREATION DU GROUPE'
                DISPLAY 'Quel groupe voulez vous creer ?'
                ACCEPT gr_lettre
-               DISPLAY 'Entrez nom équipe 1'
+               DISPLAY 'Entrez nom equipe 1'
                ACCEPT gr_eq1_nom
-               DISPLAY 'Entrez nom équipe 2'
+               DISPLAY 'Entrez nom equipe 2'
                ACCEPT gr_eq2_nom
-               DISPLAY 'Entrez nom équipe 3'
+               DISPLAY 'Entrez nom equipe 3'
                ACCEPT gr_eq3_nom
-               DISPLAY 'Entrez nom équipe 4'
+               DISPLAY 'Entrez nom equipe 4'
                ACCEPT gr_eq4_nom
                open I-O Fgroupe
                WRITE groupeTampon END-WRITE
@@ -87,30 +87,26 @@
                PERFORM WITH TEST AFTER UNTIL Wrep = 0 OR Wrep = 1
                DISPLAY 'Souhaitez vous continuer ? 1 ou 0'
                    ACCEPT Wrep
-               END-PERFORM.
-
-       AFFICHER-GROUPE.
+               END-PERFORM
+           END-PERFORM.
+       AFFICHER-GROUPES.
         OPEN INPUT Fgroupe
         MOVE 0 TO Wfin_groupe
-        MOVE 0 TO Wtrouve_groupe
-        DISPLAY "groupe ?"
-        ACCEPT Wlettre_groupe
-        PERFORM WITH TEST AFTER UNTIL Wtrouve_groupe = 1 OR Wfin_groupe = 1
+        PERFORM WITH TEST AFTER UNTIL Wfin_groupe = 1
             READ Fgroupe NEXT
 
             AT END MOVE 1 TO Wfin_groupe
-            DISPLAY 'Aucun groupe de ce nom !'
 
             NOT AT END
-            IF Wlettre_groupe = gr_lettre THEN
+
                     MOVE 1 TO Wtrouve_groupe
+                    display ' '
                     display "Groupe : "gr_lettre
                     DISPLAY gr_eq1_nom
                    DISPLAY gr_eq2_nom
                    DISPLAY gr_eq3_nom
                    DISPLAY gr_eq4_nom
 
-            END-IF
             END-READ
         END-PERFORM
         CLOSE Fgroupe.
