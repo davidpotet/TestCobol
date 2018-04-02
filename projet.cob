@@ -7,8 +7,9 @@
 
            FILE-CONTROL.
            SELECT Fgroupe ASSIGN TO "groupes.dat"
-           ORGANIZATION sequential
+           ORGANIZATION indexed
            ACCESS IS sequential
+           RECORD KEY gr_lettre
            FILE STATUS IS Fgroupe_stat.
 
            SELECT Fmatch ASSIGN TO "matchs.dat"
@@ -88,26 +89,28 @@
 
 
            PROCEDURE DIVISION.
-           OPEN EXTEND Fgroupe
-           IF groupeTampon = 35 THEN
+           OPEN I-O Fgroupe
+           IF Fgroupe_stat = 35 THEN
                OPEN OUTPUT Fgroupe
            END-IF
            CLOSE Fgroupe
 
+
+
            OPEN I-O Fmatch
-           IF matchTampon = 35 THEN
+           IF FMatch_stat = 35 THEN
                OPEN OUTPUT Fmatch
            END-IF
            CLOSE Fmatch
 
            OPEN I-O FstatMatch
-           IF statMatchTampon = 35 THEN
+           IF FstatMatch_stat = 35 THEN
                OPEN OUTPUT FstatMatch
            END-IF
            CLOSE FstatMatch
 
            OPEN I-O Fequipe
-           IF equipeTampon = 35 THEN
+           IF Fequipe_stat = 35 THEN
            OPEN OUTPUT Fequipe
            END-IF
            CLOSE Fequipe
@@ -202,8 +205,13 @@
             DISPLAY'AJOUTEZ UNe EQUIPE EN AJOUTANT LES INFORMATIONS'
             DISPLAY'NOM EQUIPE : '
             ACCEPT TampoNomEquipe;
-
-
+            PERFORM EXISTE_EQUIPE
+            PERFORM WITH TEST AFTER UNTIL Wtrouver = 1
+                   DISPLAY'Lequipe existe deja, saisir un autre'
+                   DISPLAY'Saisir un nom dequipe'
+                   ACCEPT TampoNomEquipe
+                   PERFORM EXISTE_EQUIPE
+            END-PERFORM
             DISPLAY'saisir le nom du groupe auquel on veut l assigner'
             ACCEPT TampoNomGroupe
             PERFORM EXISTE_GROUPE
@@ -242,14 +250,13 @@
            AJOUTER_GROUPE.
            PERFORM WITH TEST AFTER UNTIL Wrep = 0
                DISPLAY'Saisir la lettre correspondant au nom du groupe'
-               IF NbGroupes IS  < 8 THEN
-                   ACCEPT TampoGroupeLettre
-                   OPEN EXTEND Fgroupe
-                   MOVE TampoGroupeLettre TO gr_lettre
+               ACCEPT gr_lettre
+
+
+                   OPEN I-O Fgroupe
+
                    WRITE groupeTampon END-WRITE
-               ELSE
-                   DISPLAY'le nombre max de groupe est deja atteint'
-               END-IF
+
                PERFORM WITH TEST AFTER UNTIL Wrep = 0 OR Wrep = 1
                    DISPLAY'Souhaitez vous continuer? 1 ou 0'
                    ACCEPT Wrep
