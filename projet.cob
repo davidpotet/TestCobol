@@ -74,6 +74,8 @@
            77 Wrep PIC 9(2).
            77 TampoDernierMatch PIC 9(10).
            77 Wfini PIC 9.
+           77 Wsimul PIC 9.
+           77 Msimul PIC 9(10).
            77 Wtrouver PIC 9.
            77 TampoIdMatch PIC 9(10).
            77 TampoNomEquipe PIC A(30).
@@ -305,10 +307,29 @@
                ACCEPT m_nomStade
                WRITE matchTampon END-WRITE
                PERFORM WITH TEST AFTER UNTIL Wrep=0 OR Wrep=1
-                   DISPLAY 'Souhaitez vous continuer ? 1 ou 0'
+                   DISPLAY 'Souhaitez vous: '
+                   DISPLAY '1 Crée un nouveau match ?'
+                   DISPLAY '2 simuler ce match ?'
+                   DISPLAY '0 fin'
                    ACCEPT Wrep
+                   IF Wrep=2 THEN
+                      COMPUTE Msimul= TampoIdMatch
+                      PERFORM SIMULERMATCH
+                   END-IF
                END-PERFORM
            END-PERFORM.
 
+           
+           SIMULERMATCH.
+              COMPUTE stat_m_id = Msimul
+              DISPLAY 'CB de spectateur'
+              ACCEPT stat_m_nbSpect
+              DISPLAY 'score equipe: 'm_nomEquipe1
+              ACCEPT stat_m_scoreEq1
+              DISPLAY 'score equipe: 'm_nomEquipe2
+              ACCEPT stat_m_scoreEq2
+              DISPLAY 'note sur le match'
+              ACCEPT stat_m_note
+              WRITE statMatchTampon END-WRITE.
 
            END PROGRAM ProjetCoupeDuMonde_cbl.
