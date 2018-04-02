@@ -99,7 +99,6 @@
 
             NOT AT END
 
-                    MOVE 1 TO Wtrouve_groupe
                     display ' '
                     display "Groupe : "gr_lettre
                     DISPLAY gr_eq1_nom
@@ -111,3 +110,35 @@
         END-PERFORM
         CLOSE Fgroupe.
        END PROGRAM GROUPE_cob.
+           AFFICHER_TOUS_GROUPE.
+           MOVE 0 TO Wfini
+           OPEN INPUT Fgroupe
+           PERFORM WITH TEST AFTER UNTIL Wfini = 1
+               READ Fgroupe NEXT
+                   AT END
+                       MOVE 1 TO Wfini
+                   NOT AT END
+                       display ' '
+                       DISPLAY "Groupe : "gr_lettre
+                           OPEN INPUT Fequipe
+                               MOVE 0 TO Wfin_eq_groupe
+                               PERFORM with test after until
+                               Wfin_eq_groupe = 1
+                                   READ Fequipe
+                                       at end
+                                       move 1 to Wfin_eq_groupe
+                                       not at end
+                                       if gr_lettre=eq_nomGroupe then
+                                       display eq_nom
+
+
+                                       end-if
+                                   END-READ
+                               END-PERFORM
+                           close Fequipe
+
+                 END-READ
+
+
+           END-PERFORM
+           CLOSE Fgroupe.
