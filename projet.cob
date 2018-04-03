@@ -340,7 +340,7 @@
               MOVE 8 TO nbMatchRestant
               PERFORM AUTO_INCREMENT_ID_MATCH
               open Fequipe 
-              PERFORM WITH TEST AFTER UNTIL nbMatchRestant8eme=0
+              PERFORM WITH TEST AFTER UNTIL nbMatchRestant=0
                   MOVE 0 TO nbequipetrouve
                   MOVE 0 TO ptgagroupe
                   PERFORM WITH TEST AFTER UNTIL nbequipetrouve=4
@@ -393,7 +393,7 @@
               MOVE 4 TO nbMatchRestant
               open Fequipe
               open Fstats
-              PERFORM WITH TEST AFTER UNTIL nbMatchRestant8eme=0
+              PERFORM WITH TEST AFTER UNTIL nbMatchRestant=0
                   MOVE 0 TO nbequipetrouve
                   MOVE 0 TO ptgagroupe
                   PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
@@ -421,9 +421,9 @@
                         READ FstatMatch NEXT
                       END-PERFORM
                       IF stat_m_scoreEq1<stat_m_scoreEq2 THEN
-                        MOVE TampoNomEquipe TO m_nomEquipe2
+                        MOVE TampoNomEquipe TO m_nomEquipe1
                       ELSE
-                        MOVE TampoNomEquipe TO m_nomEquipe1  
+                        MOVE TampoNomEquipe TO m_nomEquipe2  
                       END-IF
                     END-IF
                   END-PERFORM
@@ -439,7 +439,7 @@
               MOVE 2 TO nbMatchRestant
               open Fequipe
               open Fstats
-              PERFORM WITH TEST AFTER UNTIL nbMatchRestant8eme=0
+              PERFORM WITH TEST AFTER UNTIL nbMatchRestant=0
                   MOVE 0 TO nbequipetrouve
                   MOVE 0 TO ptgagroupe
                   PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
@@ -467,9 +467,9 @@
                         READ FstatMatch NEXT
                       END-PERFORM
                       IF stat_m_scoreEq1<stat_m_scoreEq2 THEN
-                        MOVE TampoNomEquipe TO m_nomEquipe2
+                        MOVE TampoNomEquipe TO m_nomEquipe1
                       ELSE
-                        MOVE TampoNomEquipe TO m_nomEquipe1  
+                        MOVE TampoNomEquipe TO m_nomEquipe2 
                       END-IF
                     END-IF
                   END-PERFORM
@@ -482,7 +482,7 @@
       
       
            FINALPOULE.
-              open Fequipe
+              open Fmatch
               open Fstats
                   MOVE 0 TO nbequipetrouve
                   MOVE 0 TO ptgagroupe
@@ -511,17 +511,32 @@
                         READ FstatMatch NEXT
                       END-PERFORM
                       IF stat_m_scoreEq1<stat_m_scoreEq2 THEN
-                        MOVE TampoNomEquipe TO m_nomEquipe2
+                        MOVE TampoNomEquipe TO m_nomEquipe1
                       ELSE
-                        MOVE TampoNomEquipe TO m_nomEquipe1  
+                        MOVE TampoNomEquipe TO m_nomEquipe2  
                       END-IF
                     END-IF
                   END-PERFORM
                   MOVE 'poules final' TO m_statut
                   PERFORM AUTO_INCREMENT_ID_MATCH
+                  CLOSE Fmatch
                   WRITE matchTampon END-WRITE
                   PERFORM SIMULERMATCH
                   COMPUTE nbMatchRestant = nbMatchRestant -1
               END-PERFORM.
       
+              CHAMPION.
+              open Fmatch
+              open Fstats
+              PERFORM WITH TEST AFTER UNTIL m_status = 'poules final' 
+                READ Fmatch
+              END-PERFORM
+              PERFORM WITH TEST AFTER UNTIL m_id = stat_m_id
+                READ FstatMatch NEXT
+              END-PERFORM
+              IF stat_m_scoreEq1<stat_m_scoreEq2 THEN
+                DISPLAY 'the winner is:' m_nomEquipe2
+              ELSE
+                DISPLAY 'the winner is:' m_nomEquipe1 
+             END-IF
            END PROGRAM ProjetCoupeDuMonde_cbl.
