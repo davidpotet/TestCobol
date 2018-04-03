@@ -337,7 +337,7 @@
               WRITE statMatchTampon END-WRITE.
       
            HUITIEMEPOULE.
-              MOVE 4 TO nbMatchRestant
+              MOVE 8 TO nbMatchRestant
               PERFORM AUTO_INCREMENT_ID_MATCH
               open Fequipe 
               PERFORM WITH TEST AFTER UNTIL nbMatchRestant8eme=0
@@ -390,53 +390,135 @@
               END-PERFORM.
       
               QUARTPOULE.
-              MOVE 2 TO nbMatchRestant
-              PERFORM AUTO_INCREMENT_ID_MATCH
-              open Fequipe 
+              MOVE 4 TO nbMatchRestant
+              open Fequipe
+              open Fstats
               PERFORM WITH TEST AFTER UNTIL nbMatchRestant8eme=0
                   MOVE 0 TO nbequipetrouve
                   MOVE 0 TO ptgagroupe
-                  PERFORM WITH TEST AFTER UNTIL nbequipetrouve=4
-                    IF nbMatchRestant = 4
-                      MOVE A TO equiperecherché
-                    ELSE IF  nbMatchRestant = 3
-                      MOVE C TO equiperecherché
-                    ELSE IF  nbMatchRestant = 2
-                      MOVE E TO equiperecherché
-                    ELSE IF  nbMatchRestant = 1
-                      MOVE G TO equiperecherché
-                    END-IF
+                  PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
                     READ Fequipe NEXT
-                    IF eq_nomGroupe = equiperecherché THEN
+                    IF m_status = 'poules 8eme' THEN
                       COMPUTE nbequipetrouve = nbequipetrouve +1
-                      IF eq_nbPoints > ptgagroupe THEN
-                        MOVE eq_nom TO m_nomEquipe1
-                        MOVE eq_nbPoints TO ptgagroupe
+                      PERFORM WITH TEST AFTER UNTIL m_id = stat_m_id
+                        READ FstatMatch NEXT
+                      END-PERFORM
+                      IF stat_m_scoreEq1<stat_m_scoreEq2 THEN
+                        MOVE m_nomEquipe2 TO TampoNomEquipe
+                      ELSE 
+                        MOVE m_nomEquipe1 TO TampoNomEquipe      
                       END-IF
                     END-IF
                   END-PERFORM
                   MOVE 0 TO nbequipetrouve
                   MOVE 0 TO ptgagroupe
-                  PERFORM WITH TEST AFTER UNTIL nbequipetrouve=4
-                    IF nbMatchRestant = 4
-                      MOVE B TO equiperecherché
-                    ELSE IF  nbMatchRestant = 3
-                      MOVE D TO equiperecherché
-                    ELSE IF  nbMatchRestant = 2
-                      MOVE F TO equiperecherché
-                    ELSE IF  nbMatchRestant = 1
-                      MOVE H TO equiperecherché
-                    END-IF
-                    READ Fequipe NEXT
-                    IF eq_nomGroupe = equiperecherché THEN
+                  PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
+                    IF m_status = 'poules 8eme' THEN
+                    IF m_nomEquipe1 != TampoNomEquipe THEN
+                    IF m_nomEquipe2 != TampoNomEquipe THEN
                       COMPUTE nbequipetrouve = nbequipetrouve +1
-                      IF eq_nbPoints > ptgagroupe THEN
-                        MOVE eq_nom TO m_nomEquipe2
-                        MOVE eq_nbPoints TO ptgagroupe
+                      PERFORM WITH TEST AFTER UNTIL m_id = stat_m_id
+                        READ FstatMatch NEXT
+                      END-PERFORM
+                      IF stat_m_scoreEq1<stat_m_scoreEq2 THEN
+                        MOVE TampoNomEquipe TO m_nomEquipe2
+                      ELSE
+                        MOVE TampoNomEquipe TO m_nomEquipe1  
                       END-IF
                     END-IF
                   END-PERFORM
-                  MOVE 'poules 8eme' TO m_statut
+                  MOVE 'poules 4eme' TO m_statut
+                  PERFORM AUTO_INCREMENT_ID_MATCH
+                  WRITE matchTampon END-WRITE
+                  PERFORM SIMULERMATCH
+                  COMPUTE nbMatchRestant = nbMatchRestant -1
+              END-PERFORM.
+      
+      
+                 DEMIPOULE.
+              MOVE 2 TO nbMatchRestant
+              open Fequipe
+              open Fstats
+              PERFORM WITH TEST AFTER UNTIL nbMatchRestant8eme=0
+                  MOVE 0 TO nbequipetrouve
+                  MOVE 0 TO ptgagroupe
+                  PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
+                    READ Fequipe NEXT
+                    IF m_status = 'poules 4eme' THEN
+                      COMPUTE nbequipetrouve = nbequipetrouve +1
+                      PERFORM WITH TEST AFTER UNTIL m_id = stat_m_id
+                        READ FstatMatch NEXT
+                      END-PERFORM
+                      IF stat_m_scoreEq1<stat_m_scoreEq2 THEN
+                        MOVE m_nomEquipe2 TO TampoNomEquipe
+                      ELSE 
+                        MOVE m_nomEquipe1 TO TampoNomEquipe      
+                      END-IF
+                    END-IF
+                  END-PERFORM
+                  MOVE 0 TO nbequipetrouve
+                  MOVE 0 TO ptgagroupe
+                  PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
+                    IF m_status = 'poules 4eme' THEN
+                    IF m_nomEquipe1 != TampoNomEquipe THEN
+                    IF m_nomEquipe2 != TampoNomEquipe THEN
+                      COMPUTE nbequipetrouve = nbequipetrouve +1
+                      PERFORM WITH TEST AFTER UNTIL m_id = stat_m_id
+                        READ FstatMatch NEXT
+                      END-PERFORM
+                      IF stat_m_scoreEq1<stat_m_scoreEq2 THEN
+                        MOVE TampoNomEquipe TO m_nomEquipe2
+                      ELSE
+                        MOVE TampoNomEquipe TO m_nomEquipe1  
+                      END-IF
+                    END-IF
+                  END-PERFORM
+                  MOVE 'poules semi' TO m_statut
+                  PERFORM AUTO_INCREMENT_ID_MATCH
+                  WRITE matchTampon END-WRITE
+                  PERFORM SIMULERMATCH
+                  COMPUTE nbMatchRestant = nbMatchRestant -1
+              END-PERFORM.
+      
+      
+           FINALPOULE.
+              open Fequipe
+              open Fstats
+                  MOVE 0 TO nbequipetrouve
+                  MOVE 0 TO ptgagroupe
+                  PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
+                    READ Fequipe NEXT
+                    IF m_status = 'poules semi' THEN
+                      COMPUTE nbequipetrouve = nbequipetrouve +1
+                      PERFORM WITH TEST AFTER UNTIL m_id = stat_m_id
+                        READ FstatMatch NEXT
+                      END-PERFORM
+                      IF stat_m_scoreEq1<stat_m_scoreEq2 THEN
+                        MOVE m_nomEquipe2 TO TampoNomEquipe
+                      ELSE 
+                        MOVE m_nomEquipe1 TO TampoNomEquipe      
+                      END-IF
+                    END-IF
+                  END-PERFORM
+                  MOVE 0 TO nbequipetrouve
+                  MOVE 0 TO ptgagroupe
+                  PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
+                    IF m_status = 'poules semi' THEN
+                    IF m_nomEquipe1 != TampoNomEquipe THEN
+                    IF m_nomEquipe2 != TampoNomEquipe THEN
+                      COMPUTE nbequipetrouve = nbequipetrouve +1
+                      PERFORM WITH TEST AFTER UNTIL m_id = stat_m_id
+                        READ FstatMatch NEXT
+                      END-PERFORM
+                      IF stat_m_scoreEq1<stat_m_scoreEq2 THEN
+                        MOVE TampoNomEquipe TO m_nomEquipe2
+                      ELSE
+                        MOVE TampoNomEquipe TO m_nomEquipe1  
+                      END-IF
+                    END-IF
+                  END-PERFORM
+                  MOVE 'poules final' TO m_statut
+                  PERFORM AUTO_INCREMENT_ID_MATCH
                   WRITE matchTampon END-WRITE
                   PERFORM SIMULERMATCH
                   COMPUTE nbMatchRestant = nbMatchRestant -1
