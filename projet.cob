@@ -391,9 +391,9 @@
       
               QUARTPOULE.
               MOVE 4 TO nbMatchRestant
-              open Fequipe
               open Fstats
               PERFORM WITH TEST AFTER UNTIL nbMatchRestant=0
+                  open Fmatch
                   MOVE 0 TO nbequipetrouve
                   MOVE 0 TO ptgagroupe
                   PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
@@ -432,14 +432,15 @@
                   WRITE matchTampon END-WRITE
                   PERFORM SIMULERMATCH
                   COMPUTE nbMatchRestant = nbMatchRestant -1
-              END-PERFORM.
+              END-PERFORM
+              CLOSE Fstats.
       
       
                  DEMIPOULE.
               MOVE 2 TO nbMatchRestant
-              open Fequipe
               open Fstats
               PERFORM WITH TEST AFTER UNTIL nbMatchRestant=0
+                  open Fmatch
                   MOVE 0 TO nbequipetrouve
                   MOVE 0 TO ptgagroupe
                   PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
@@ -478,16 +479,17 @@
                   WRITE matchTampon END-WRITE
                   PERFORM SIMULERMATCH
                   COMPUTE nbMatchRestant = nbMatchRestant -1
-              END-PERFORM.
+              END-PERFORM
+              CLOSE Fstats.
       
       
            FINALPOULE.
-              open Fmatch
               open Fstats
                   MOVE 0 TO nbequipetrouve
                   MOVE 0 TO ptgagroupe
                   PERFORM WITH TEST AFTER UNTIL nbequipetrouve=1
-                    READ Fequipe NEXT
+                    open Fmatch
+                    READ Fmatch NEXT
                     IF m_status = 'poules semi' THEN
                       COMPUTE nbequipetrouve = nbequipetrouve +1
                       PERFORM WITH TEST AFTER UNTIL m_id = stat_m_id
@@ -523,7 +525,8 @@
                   WRITE matchTampon END-WRITE
                   PERFORM SIMULERMATCH
                   COMPUTE nbMatchRestant = nbMatchRestant -1
-              END-PERFORM.
+              END-PERFORM
+              CLOSE Fstats.
       
               CHAMPION.
               open Fmatch
@@ -538,5 +541,8 @@
                 DISPLAY 'the winner is:' m_nomEquipe2
               ELSE
                 DISPLAY 'the winner is:' m_nomEquipe1 
-             END-IF
+              END-IF
+              CLOSE Fmatch
+              CLOSE Fstats.
+      
            END PROGRAM ProjetCoupeDuMonde_cbl.
